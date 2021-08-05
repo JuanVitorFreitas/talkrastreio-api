@@ -1,14 +1,25 @@
 const api = require("../services/linketrack");
 const { DateTime } = require('luxon');
+const Bottleneck = require('bottleneck');
+
+
     
+const limiter = new Bottleneck({
+    maxConcurrent: 1,
+    minTime: 1500,
+    highWater: 10,
+    strategy:Bottleneck.strategy.OVERFLOW
+});
     
 module.exports = {
-    async fetchTracking(req, res){
+    async fetchTracking(req, res) {
         
+        const counts = limiter.counts();
+        console.log(counts);
+
         try {
-            console.log(req.body);
-            const { trackingCode } = req.body;
-            const { data } = await api.get('/', { params: { codigo: trackingCode } });
+            const {trackingCode} = req.body;
+            const { data } = await limiter.schedule({expiration: 1500},() => api.get('/', { params: { codigo: trackingCode } }));
             const { codigo: code, ultimo: updatedAt, servico: type, eventos: events } = data;
             return res.json({
                 code,
@@ -26,6 +37,9 @@ module.exports = {
                 })
         });
         } catch (err) {
+            if (err instanceof Bottleneck.BottleneckError) {
+                return res.status(503).send();
+            }
             console.error(err)
             return res.status(500).json({ status: 500 });
         }
