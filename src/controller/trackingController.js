@@ -19,6 +19,10 @@ module.exports = {
 
         try {
             const {trackingCode} = req.body;
+						if (!trackingCode){
+							console.log("Tracking code is null or invalid");
+							return res.status(400).send();
+						}
             const { data } = await limiter.schedule({expiration: 1500},() => api.get('/', { params: { codigo: trackingCode } }));
             const { codigo: code, ultimo: updatedAt, servico: type, eventos: events } = data;
             return res.json({
