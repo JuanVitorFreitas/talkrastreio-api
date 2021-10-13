@@ -45,7 +45,7 @@ module.exports = {
 			if (err instanceof Bottleneck.BottleneckError) {
 				return res.status(503).send();
 			}
-			console.error(err)
+			console.error(err.stack)
 			return res.status(500).json({ status: 500 });
 		}
 	}
