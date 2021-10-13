@@ -6,9 +6,10 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 
 const limiter = rateLimit({
-    windowMs: 1000,
-    max: 15,
-    message: 'Too many requests, please try again later.'
+	windowMs: 2000,
+	max: 2,
+	keyGenerator: (req) => req.ip,
+	message: 'Too many requests, please try again later.'
 });
 
 app.use(cors());
