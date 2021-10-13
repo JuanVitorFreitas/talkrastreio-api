@@ -45,6 +45,9 @@ module.exports = {
 			if (err instanceof Bottleneck.BottleneckError) {
 				return res.status(503).send();
 			}
+			if (err.response?.status === 401) {
+				return res.status(404).json({ message: 'Invalid tracking code' })
+			}
 			console.error(err.stack)
 			return res.status(500).json({ status: 500 });
 		}
