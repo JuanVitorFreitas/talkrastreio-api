@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require("cors");
 const router = require("./routes");
 const rateLimit = require('express-rate-limit');
+const { errors } = require('celebrate');
 const app = express();
 
 const limiter = rateLimit({
@@ -16,6 +17,7 @@ app.use(cors());
 app.use(limiter);
 app.use(express.json());
 app.use(router);
+app.use(errors());
 
 
 
