@@ -7,7 +7,7 @@ const { errors } = require('celebrate');
 const app = express();
 
 const limiter = rateLimit({
-	windowMs: 5000,
+	windowMs: 3000,
 	max: 1,
 	keyGenerator: (req) => {
 		return req.headers['x-forwarded-for'] || req.ip;
