@@ -10,7 +10,7 @@ const limiter = rateLimit({
 	windowMs: 2000,
 	max: 2,
 	keyGenerator: (req) => {
-		console.log(req.ip);
+		console.log(req.headers);
 		return req.ip;
 	},
 	message: 'Too many requests, please try again later.'
